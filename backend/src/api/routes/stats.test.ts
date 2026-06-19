@@ -15,7 +15,7 @@ describe('Stats API route', () => {
       return { rows: [] };
     });
 
-    const db: DbClient = { query: queryMock };
+    const db: DbClient = { query: queryMock as any };
     const app = express();
     app.use('/api', createStatsRouter(db));
 
