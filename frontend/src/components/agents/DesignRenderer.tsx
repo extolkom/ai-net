@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DesignResult, ComponentNode, DesignColor } from '../../types/agent';
+import { DesignResult, ComponentNode } from '../../types/agent';
 import { getDesignDetails } from '../../utils/agentUtils';
 
 interface Props {

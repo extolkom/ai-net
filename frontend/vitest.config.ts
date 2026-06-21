@@ -1,8 +1,7 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -15,13 +14,11 @@ export default defineConfig({
       '@context': path.resolve(__dirname, './src/context'),
     },
   },
-  server: {
-    port: 3000,
-  },
   test: {
     environment: 'jsdom',
     setupFiles: './vitest.setup.ts',
     globals: true,
+    include: ['src/**/*.test.{ts,tsx}'],
     exclude: ['tests/e2e/**', 'node_modules/**'],
   },
-})
+});
