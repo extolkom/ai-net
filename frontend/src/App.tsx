@@ -5,6 +5,9 @@ import LandingPage from './pages/LandingPage'
 import AgentsPage from './pages/AgentsPage'
 import NewTaskPage from './pages/tasks/NewTaskPage'
 import TaskDetailPage from './pages/TaskDetailPage'
+import DashboardPage from './pages/dashboard'
+import WalletPage from './pages/WalletPage'
+import ErrorBoundary from './components/common/ErrorBoundary'
 
 const TopNav: React.FC = () => {
   const { publicKey, connected, disconnect } = useWallet()
@@ -13,6 +16,8 @@ const TopNav: React.FC = () => {
   const getTitle = () => {
     switch (location.pathname) {
       case '/': return 'Home'
+      case '/dashboard': return 'Dashboard'
+      case '/wallet': return 'Wallet'
       case '/agents': return 'Agent Registry'
       case '/tasks/new': return 'New Task'
       default:
@@ -32,8 +37,14 @@ const TopNav: React.FC = () => {
       <h2 style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--text-secondary)' }} id="page-title">{getTitle()}</h2>
       <nav>
         <Link to="/" className={location.pathname === '/' ? 'active' : ''} id="nav-home">Home</Link>
+        {connected && (
+          <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'active' : ''} id="nav-dashboard">Dashboard</Link>
+        )}
         <Link to="/agents" className={location.pathname === '/agents' ? 'active' : ''} id="nav-agents">Agents</Link>
         <Link to="/tasks/new" className={location.pathname === '/tasks/new' ? 'active' : ''} id="nav-new-task">New Task</Link>
+        {connected && (
+          <Link to="/wallet" className={location.pathname === '/wallet' ? 'active' : ''} id="nav-wallet">Wallet</Link>
+        )}
         
         {connected && publicKey ? (
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
@@ -55,6 +66,8 @@ const AppContent: React.FC = () => {
       <main>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/wallet" element={<WalletPage />} />
           <Route path="/agents" element={<AgentsPage />} />
           <Route path="/tasks/new" element={<NewTaskPage />} />
           <Route path="/tasks/:id" element={<TaskDetailPage />} />
@@ -66,9 +79,11 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <WalletProvider>
-      <AppContent />
-    </WalletProvider>
+    <ErrorBoundary>
+      <WalletProvider>
+        <AppContent />
+      </WalletProvider>
+    </ErrorBoundary>
   )
 }
 
