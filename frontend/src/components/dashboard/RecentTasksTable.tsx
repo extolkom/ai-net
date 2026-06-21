@@ -2,12 +2,8 @@
 import React from 'react';
 import { Skeleton } from '../common/Skeleton';
 import styles from './RecentTasksTable.module.css';
-
-interface Task {
-  id: string;
-  status: string;
-  createdAt: string; // ISO string
-}
+import { getRecentTasks } from '@services/api';
+import type { TaskResponse } from '@types/api';
 
 interface Props {
   walletAddress: string;
@@ -15,15 +11,18 @@ interface Props {
 }
 
 export const RecentTasksTable: React.FC<Props> = ({ walletAddress, loading }) => {
-  const [tasks, setTasks] = React.useState<Task[]>([]);
+  const [tasks, setTasks] = React.useState<TaskResponse[]>([]);
 
   React.useEffect(() => {
     if (!walletAddress) return;
     const fetchTasks = async () => {
       try {
-        const res = await fetch(`/api/wallets/${walletAddress}/tasks?limit=5`);
-        const data = await res.json();
-        setTasks(data);
+        const data = await getRecentTasks(walletAddress);
+        const mappedTasks = data.map(task => ({
+          ...task,
+          id: task.id || task.taskId,
+        }));
+        setTasks(mappedTasks);
       } catch (e) {
         console.error(e);
         setTasks([]);

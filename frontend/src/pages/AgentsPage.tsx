@@ -1,33 +1,20 @@
 import React, { useState, useEffect } from 'react'
-
-interface Agent {
-  id: string
-  name: string
-  capabilities: string[]
-  price: number
-  reputation: number
-  status: string
-}
+import { getAgents } from '@services/api'
+import type { AgentRecord } from '@types/api'
 
 const AgentsPage: React.FC = () => {
-  const [agents, setAgents] = useState<Agent[]>([])
+  const [agents, setAgents] = useState<AgentRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/agents')
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error('Failed to fetch agents')
-        }
-        return res.json()
-      })
-      .then((data: Agent[]) => {
+    getAgents()
+      .then((data) => {
         setAgents(data)
         setLoading(false)
       })
-      .catch((err) => {
-        setError(err.message || 'Error loading agents')
+      .catch((err: unknown) => {
+        setError(err instanceof Error ? err.message : 'Error loading agents')
         setLoading(false)
       })
   }, [])
